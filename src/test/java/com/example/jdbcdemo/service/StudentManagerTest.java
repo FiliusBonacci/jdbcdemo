@@ -26,8 +26,7 @@ public class StudentManagerTest {
 	@Test
 	public void checkAdding(){
 		
-		Student student = new Student();
-		
+		Student student = new Student(FIRSTNAME_1, LASTNAME_1, DOB_1);
 		
 		studentManager.clearStudents();
 		assertEquals(1, studentManager.addStudent(student));
@@ -39,6 +38,27 @@ public class StudentManagerTest {
 		assertEquals(LASTNAME_1, studentRetrieved.getLastname());
 		assertEquals(DOB_1, studentRetrieved.getDob());
 		
+	}
+	@Test
+	public void checkSearchingById(){
+
+		studentManager.clearStudents();
+		studentManager.addStudent(new Student(FIRSTNAME_1, LASTNAME_1, DOB_1));
+		List<Student> listOfStudents = studentManager.getAllStudents();
+		Student studentRetrieved = listOfStudents.get(0);
+
+		Student searchedStudent = studentManager.findStudentById(studentRetrieved.getStudentNo());
+
+		assertEquals(studentRetrieved.getStudentNo(), searchedStudent.getStudentNo());
+
+
+	}
+
+	@Test
+	public void checkSearchingByLastname(){
+
+		Student searchedStudent = studentManager.findStudentByLastname(LASTNAME_1);
+		assertEquals(LASTNAME_1, searchedStudent.getLastname());
 	}
 
 }

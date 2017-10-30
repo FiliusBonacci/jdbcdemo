@@ -29,6 +29,8 @@ public class StudentManager {
 	private PreparedStatement addStudentStmt;
 	private PreparedStatement deleteAllStudentsStmt;
 	private PreparedStatement getAllStudentsStmt;
+	private PreparedStatement findStudentByIdStmt;
+	private PreparedStatement findStudentByLastnameStmt;
 
 	private Statement statement;
 
@@ -50,13 +52,22 @@ public class StudentManager {
 			if (!tableExists)
 				statement.executeUpdate(createStudentTable);
 
+			/* other statements */
 			addStudentStmt = connection
 					.prepareStatement("INSERT INTO Student (firstname, lastname, dob) "
-							+ "VALUES (?, ?, ? ,?)");
+							+ "VALUES (?, ?, ? )");
 			deleteAllStudentsStmt = connection
 					.prepareStatement("DELETE FROM Student");
 			getAllStudentsStmt = connection
-					.prepareStatement("SELECT studnetNo, firstname, lastname, dob FROM Student");
+					.prepareStatement("SELECT * FROM Student");
+
+			findStudentByIdStmt = connection.prepareStatement(
+					"SELECT * FROM Student WHERE studentNo = ?" );
+
+
+			findStudentByLastnameStmt = connection.prepareStatement(
+					"SELECT * FROM Student WHERE lastname LIKE ?"
+			);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -91,7 +102,7 @@ public class StudentManager {
 	}
 
 	public List<Student> getAllStudents() {
-		List<Student> Students = new ArrayList<Student>();
+		List<Student> students = new ArrayList<Student>();
 
 		try {
 			ResultSet rs = getAllStudentsStmt.executeQuery();
@@ -100,15 +111,62 @@ public class StudentManager {
 				Student s = new Student();
 				s.setStudentNo(rs.getInt("studentNo"));
 				s.setFirstname(rs.getString("firstname"));
-				s.setFirstname(rs.getString("lastname"));
+				s.setLastname(rs.getString("lastname"));
 				s.setDob(rs.getDate("dob"));
-				Students.add(s);
+				students.add(s);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return Students;
+		return students;
+	}
+
+	public Student findStudentById(int id){
+
+		try {
+			findStudentByIdStmt.setInt(1, id);
+
+			ResultSet rs = findStudentByIdStmt.executeQuery();
+			Student student = new Student();
+			while (rs.next()){
+
+				student.setStudentNo(rs.getInt("studentNo"));
+				student.setFirstname(rs.getString("firstname"));
+				student.setLastname(rs.getString("lastname"));
+				student.setDob(rs.getDate("dob"));
+
+			}
+
+			return student;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public Student findStudentByLastname(String lastname){
+		try {
+			findStudentByLastnameStmt.setString(1, lastname);
+			ResultSet rs = findStudentByLastnameStmt.executeQuery();
+
+			Student student = new Student();
+
+			while (rs.next()){
+				student.setStudentNo(rs.getInt("studentNo"));
+				student.setFirstname(rs.getString("firstname"));
+				student.setLastname(rs.getString("lastname"));
+				student.setDob(rs.getDate("dob"));
+			}
+			return student;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 }

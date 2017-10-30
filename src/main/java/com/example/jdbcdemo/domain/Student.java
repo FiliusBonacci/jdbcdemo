@@ -13,8 +13,13 @@ public class Student {
 	
 	public Student(){
 	}
-		
-	
+
+	public Student(String firstname, String lastname, Date dob) {
+		super();
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.dob = dob;
+	}
 	
 	public Student(int studentNo, String firstname, String lastname, Date dob) {
 		super();
