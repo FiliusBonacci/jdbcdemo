@@ -12,7 +12,7 @@ import com.example.jdbcdemo.domain.Student;
 public class StudentManagerTest {
 	
 	
-	StudentManager studentManager = new StudentManager();
+	StudentManagerJDBC studentManager = new StudentManagerJDBC();
 	
 	private final static String FIRSTNAME_1 = "Franek";
 	private final static String LASTNAME_1 = "Kwiatkowski";
