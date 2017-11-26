@@ -32,6 +32,7 @@ public class StudentManagerJDBC implements StudentManager {
     private PreparedStatement findStudentByLastnameStmt;
 
     private Statement statement;
+    private PreparedStatement updateStudentsStmt;
 
 
     public StudentManagerJDBC() {
@@ -67,6 +68,10 @@ public class StudentManagerJDBC implements StudentManager {
 
             findStudentByLastnameStmt = connection.prepareStatement(
                     "SELECT * FROM Student WHERE lastname LIKE ?"
+            );
+
+            updateStudentsStmt = connection.prepareStatement(
+                    "UPDATE Student SET firstname=?, lastname=?, dob=? WHERE studentNo=?"
             );
 
         } catch (SQLException e) {
@@ -187,7 +192,27 @@ public class StudentManagerJDBC implements StudentManager {
                 connection.rollback();
             } catch (SQLException e) {
                 e.printStackTrace();
-                //!!!! ALARM
+            }
+        }
+    }
+
+    @Override
+    public void updateAllStudents(List<Student> students, String lastname) {
+        try {
+            connection.setAutoCommit(false);
+            for (Student student : students) {
+                updateStudentsStmt.setString(1, student.getFirstname());
+                updateStudentsStmt.setString(2, lastname);
+                updateStudentsStmt.setDate(3, student.getDob());
+                updateStudentsStmt.setInt(4, student.getStudentNo());
+                updateStudentsStmt.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException exception) {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }

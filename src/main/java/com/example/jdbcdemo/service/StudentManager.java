@@ -7,4 +7,6 @@ public interface StudentManager {
 
     /* batch insert - transactional */
     public void addAllStudents(List<Student> students);
+
+    public void updateAllStudents(List<Student> students, String lastname);
 }

@@ -94,7 +94,6 @@ public class StudentManagerTest {
         List<Student> students = new ArrayList<>();
         students.add(s1);
         students.add(s2);
-        //persons.add(person2);
         students.add(s3);
         students.add(s4);
 
@@ -104,5 +103,32 @@ public class StudentManagerTest {
         //assertTrue(size == 0 || size == 4);
 
         assertThat(size, either(is(4)).or(is(0)));
+    }
+
+    @Test
+    public void checkUpdateAll() {
+        studentManager.clearStudents();
+
+        List<Student> students = new ArrayList<>();
+        students.add(s1);
+        students.add(s2);
+        students.add(s3);
+        students.add(s4);
+
+        studentManager.addAllStudents(students);
+        studentManager.updateAllStudents(students, "PopularneNazwisko");
+
+        List<Student> studentsAfterUpdate = studentManager.getAllStudents();
+        /*
+        * Próba nadania wszystkim studentom nazwiska="PopularneNazwisko"
+        * nie powinna się udać ponieważ jest nałożone ograniczenie lastname UNIQUE przy tworzeniu tabeli
+        * tzn każde nazwisko ma być unikatowe
+        * ponieważ transakcja ma się nie udać ŻADEN student nie będzie miał PopularnegoNazwiska -> rollback
+        * */
+        for(Student student : studentsAfterUpdate){
+            assertNotEquals("PopularneNazwisko", student.getFirstname());
+        }
+
+
     }
 }
